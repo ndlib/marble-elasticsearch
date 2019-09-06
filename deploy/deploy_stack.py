@@ -9,6 +9,4 @@ class DeployStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
-
-        # The code that defines your stack goes here
-        # hello = DeployConstruct(self, "MyHelloConstruct", num_buckets=1)
+        esearch = DeployConstruct(self, "ESSearchConstruct", domain_name=id)

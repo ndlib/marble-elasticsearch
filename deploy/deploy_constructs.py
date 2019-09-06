@@ -1,22 +1,59 @@
 from aws_cdk import (
-    aws_iam as iam,
-    aws_s3 as s3,
+    aws_elasticsearch as es,
     core
 )
 
 
 class DeployConstruct(core.Construct):
 
-    # @property
-    # def buckets(self):
-    #     return tuple(self._buckets)
+    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id)
 
-    # def __init__(self, scope: core.Construct, id: str, num_buckets: int) -> None:
-    #     super().__init__(scope, id)
-    #     self._buckets = []
-    #     for i in range(0, num_buckets):
-    #         self._buckets.append(s3.Bucket(self, f"Bucket-{i}"))
-    
-    # def grant_read(self, principal: iam.IPrincipal):
-    #     for b in self.buckets:
-    #         b.grant_read(principal, "*")
+        domain_name = kwargs['domain_name']
+        account_id = core.Aws.ACCOUNT_ID
+        region = core.Aws.REGION
+        policy_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*"
+
+        es.CfnDomain(
+            self,
+            id="documentELDomain",
+            elasticsearch_cluster_config={
+                "instanceCount": 2,
+                "zoneAwarenessEnabled": True,
+                "zoneAwarenessConfig": {
+                    "availabilityZoneCount": 2
+                },
+                "instanceType": "t2.small.elasticsearch"
+            },
+            ebs_options={
+                "ebsEnabled": True,
+                "volumeSize": 10,
+                "volumeType": "gp2"
+            },
+            access_policies={
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": "*",
+                        "Action": "es:ESHttpGet",
+                        "Resource": policy_resource
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
+                        "Action": [
+                            "es:ESHttpHead",
+                            "es:ESHttpPost",
+                            "es:ESHttpGet",
+                            "es:ESHttpDelete",
+                            "es:ESHttpPut"
+                        ],
+                        "Resource": policy_resource
+                    }
+                ]
+            },
+            domain_name=domain_name,
+            snapshot_options={"automatedSnapshotStartHour": 4},
+            elasticsearch_version="7.1",
+        )
