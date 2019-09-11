@@ -12,7 +12,8 @@ class DeployConstruct(core.Construct):
         domain_name = kwargs['domain_name']
         account_id = core.Aws.ACCOUNT_ID
         region = core.Aws.REGION
-        policy_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*"
+        full_access_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*"
+        anon_search_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*/_search"
 
         es.CfnDomain(
             self,
@@ -36,8 +37,11 @@ class DeployConstruct(core.Construct):
                     {
                         "Effect": "Allow",
                         "Principal": "*",
-                        "Action": "es:ESHttpGet",
-                        "Resource": policy_resource
+                        "Action": [
+                            "es:ESHttpPost",
+                            "es:ESHttpGet"
+                        ],
+                        "Resource": anon_search_resource
                     },
                     {
                         "Effect": "Allow",
@@ -49,7 +53,7 @@ class DeployConstruct(core.Construct):
                             "es:ESHttpDelete",
                             "es:ESHttpPut"
                         ],
-                        "Resource": policy_resource
+                        "Resource": full_access_resource
                     }
                 ]
             },
