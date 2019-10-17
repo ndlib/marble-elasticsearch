@@ -2,6 +2,7 @@ from aws_cdk import (
     aws_elasticsearch as es,
     core
 )
+import os
 
 
 class DeployConstruct(core.Construct):
@@ -14,18 +15,12 @@ class DeployConstruct(core.Construct):
         region = core.Aws.REGION
         full_access_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*"
         anon_search_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*/_search"
+        es_cluster_cfg = self.config_cluster(os.environ.get('STAGE'))
 
         es.CfnDomain(
             self,
             id="documentELDomain",
-            elasticsearch_cluster_config={
-                "instanceCount": 2,
-                "zoneAwarenessEnabled": True,
-                "zoneAwarenessConfig": {
-                    "availabilityZoneCount": 2
-                },
-                "instanceType": "t2.small.elasticsearch"
-            },
+            elasticsearch_cluster_config=es_cluster_cfg,
             ebs_options={
                 "ebsEnabled": True,
                 "volumeSize": 10,
@@ -61,3 +56,13 @@ class DeployConstruct(core.Construct):
             snapshot_options={"automatedSnapshotStartHour": 4},
             elasticsearch_version="7.1",
         )
+
+    def config_cluster(stage: str):
+        es_cluster_cfg = {
+            "instanceCount": 1,
+            "instanceType": "t2.small.elasticsearch"
+        }
+        if stage and stage.lower().startswith('prod'):
+            es_cluster_cfg["instanceCount"] = 2
+            es_cluster_cfg["zoneAwarenessEnabled"] = True
+            es_cluster_cfg["zoneAwarenessConfig"] = {"availabilityZoneCount": 2}
