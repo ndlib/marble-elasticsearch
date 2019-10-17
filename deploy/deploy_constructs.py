@@ -57,7 +57,7 @@ class DeployConstruct(core.Construct):
             elasticsearch_version="7.1",
         )
 
-    def config_cluster(stage: str):
+    def config_cluster(self, stage: str):
         es_cluster_cfg = {
             "instanceCount": 1,
             "instanceType": "t2.small.elasticsearch"
