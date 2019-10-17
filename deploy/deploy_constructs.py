@@ -57,7 +57,7 @@ class DeployConstruct(core.Construct):
             elasticsearch_version="7.1",
         )
 
-    def config_cluster(self, stage: str):
+    def config_cluster(self, stage: str) -> dict:
         es_cluster_cfg = {
             "instanceCount": 1,
             "instanceType": "t2.small.elasticsearch"
@@ -66,3 +66,4 @@ class DeployConstruct(core.Construct):
             es_cluster_cfg["instanceCount"] = 2
             es_cluster_cfg["zoneAwarenessEnabled"] = True
             es_cluster_cfg["zoneAwarenessConfig"] = {"availabilityZoneCount": 2}
+        return es_cluster_cfg
