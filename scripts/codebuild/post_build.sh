@@ -3,3 +3,19 @@ magenta=`tput setaf 5`
 reset=`tput sgr0`
 
 echo "${magenta}----- POST-BUILD -----${reset}"
+
+## install yarn
+npm install -g yarn || { echo "Npm install failed" ;exit 1; }
+## install gatsby
+yarn global add gatsby-cli || { echo "Could not install Gatsby Command Line Tools";exit 1; }
+## install app dependencies
+yarn install || { echo "yarn install failed" ;exit 1; }
+
+pip install -r requirements.txt
+
+echo "PRE CRUD"
+pushd scripts/gatsby-source-iiif
+yarn install
+node crud.js
+popd
+echo "POST CRUD"
