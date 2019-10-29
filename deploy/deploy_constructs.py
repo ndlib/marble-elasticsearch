@@ -32,7 +32,22 @@ class DeployConstruct(core.Construct):
                     {
                         "Effect": "Allow",
                         "Principal": "*",
-                        "Action": "es:*",
+                        "Action": [
+                            "es:ESHttpPost",
+                            "es:ESHttpGet"
+                        ],
+                        "Resource": anon_search_resource
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
+                        "Action": [
+                            "es:ESHttpHead",
+                            "es:ESHttpPost",
+                            "es:ESHttpGet",
+                            "es:ESHttpDelete",
+                            "es:ESHttpPut"
+                        ],
                         "Resource": full_access_resource
                     }
                 ]
