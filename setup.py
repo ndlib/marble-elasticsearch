@@ -19,8 +19,11 @@ setuptools.setup(
     packages=setuptools.find_packages(where="deploy"),
 
     install_requires=[
-        "aws-cdk.core>=1.2.0,<2.0",
-        "aws-cdk.aws_iam>=1.2.0,<2.0",
+        "aws-cdk.core>=1.7.0,<2.0",
+        "aws-cdk.aws_iam>=1.7.0,<2.0",
+        "aws_cdk.aws_elasticsearch>=1.7.0,<2.0",
+        "elasticsearch>=7.0.4,<8",
+        "requests-aws4auth>=0.9,<1.0",
     ],
 
     python_requires=">=3.6",

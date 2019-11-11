@@ -1,5 +1,13 @@
-# Hesburgh Libraries Python Template Repository
+# Marble Elasticsearch
 ## Description
+Create and configure an AWS elasticsearch cluster that can be populated with data sets from a variety of sources.
+Each set of data should be its own indice. Each indice should contain 1 shard and 1 replica when created.
+```
+settings = {'settings': {'number_of_shards': 1, 'number_of_replicas': 1}}
+```
+
+See src/crud.py for insert examples.
+
 ## Installation
 1. Setup pyenv - https://github.com/pyenv/pyenv
 2. Setup aws-cdk - https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html
@@ -20,6 +28,7 @@ An example would be our linter package - flake8
 ### Production Dependencies
 Review the install_requires in setup.py to update production packages
 ## Deployment
+Changes to this repository are deployed via an AWS code pipeline.
 ### Local deployment to AWS
 1. Setup virtual env
     1. python -m venv .env
@@ -29,6 +38,5 @@ Review the install_requires in setup.py to update production packages
 3. Exit virtual env
     1. deactivate
 
-## NOTES 
- * Templated repo must setup Github integrations with continuous integration(ie Hound, Travis, CodeClimate, etc)
- * Sentry integration - https://docs.sentry.io/error-reporting/quickstart/?platform=python
+## NOTES
+
