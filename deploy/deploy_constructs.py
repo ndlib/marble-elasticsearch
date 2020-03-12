@@ -13,7 +13,6 @@ class DeployConstruct(core.Construct):
         domain_name = kwargs['domain_name']
         account_id = core.Aws.ACCOUNT_ID
         region = core.Aws.REGION
-        full_access_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*"
         anon_search_resource = f"arn:aws:es:{region}:{account_id}:domain/{domain_name}/*/_search"
         es_cluster_cfg = self.config_cluster(os.environ.get('STAGE'))
 
@@ -37,18 +36,6 @@ class DeployConstruct(core.Construct):
                             "es:ESHttpGet"
                         ],
                         "Resource": anon_search_resource
-                    },
-                    {
-                        "Effect": "Allow",
-                        "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
-                        "Action": [
-                            "es:ESHttpHead",
-                            "es:ESHttpPost",
-                            "es:ESHttpGet",
-                            "es:ESHttpDelete",
-                            "es:ESHttpPut"
-                        ],
-                        "Resource": full_access_resource
                     }
                 ]
             },
