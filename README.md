@@ -1,12 +1,8 @@
 # Marble Elasticsearch
 ## Description
-Create and configure an AWS elasticsearch cluster that can be populated with data sets from a variety of sources.
-Each set of data should be its own indice. Each indice should contain 1 shard and 1 replica when created.
-```
-settings = {'settings': {'number_of_shards': 1, 'number_of_replicas': 1}}
-```
+AWS Elasticsearch is the service used to provide search capability for the [marble site](https://marble.library.nd.edu/). Every image collection to be included on the site first generates a IIIF manifest that contains the title, tags, and other metadata.  [Scripts](https://github.com/ndlib/marble-website-starter/blob/master/scripts/gatsby-source-iiif/indexSearch.js) then parse the manifest and write key peices of information to Elasticsearch. When end-users search the marble site they are searching through the data stored in Elasticsearch and relevant results based on their input are served back.
 
-See src/crud.py for insert examples.
+This repository is responsible for creating an Elasticsearch cluster with node(s) and configurating them appropriately. It does not generate IIIF manifest nor parse the data. To test CRUD operations once you've ran through the deployment steps see src/crud.py
 
 ## Installation
 1. Setup pyenv - https://github.com/pyenv/pyenv
